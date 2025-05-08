@@ -1,66 +1,76 @@
-# Sistema de Votação em Java (Console)
+# Voting System (Java Console Application)
 
-Um sistema de votação simples desenvolvido em Java, utilizando estruturas de dados como `Map` e `Set` para simular uma eleição no terminal. Permite cadastrar candidatos, votar por número com verificação por CPF, e visualizar resultados ordenados.
+This project is a simple voting system developed in Java using console input. It allows users to register candidates, vote using a unique voter ID (e.g., CPF), and view or export the election results.
 
-## Funcionalidades
 
-- Cadastrar candidatos únicos (nome, número e partido)
-- Permitir votação com verificação de CPF único
-- Bloquear votos duplicados por CPF
-- Exibir resultados ordenados por número de votos
-- Listar todos os candidatos cadastrados
-- Validação de entradas para evitar erros de digitação
+## Features
 
-## Tecnologias Utilizadas
+- Register candidates with name, number, and political party
+- Prevent duplicate candidate numbers
+- Vote using a unique voter ID (each ID can vote only once)
+- Show results in descending order by number of votes
+- Export results to a .csv file
+- Input validation and basic error handling
+
+## Technologies Used
 
 - Java 17
-- Console (entrada via `Scanner`)
-- Estrutura com 3 classes principais:
-    - `Candidato`
-    - `SistemaVotacao`
-    - `Main`
 
-## Como Executar
+- Standard input/output with `Scanner`
 
-1. Clone o repositório:
+- Object-oriented structure with multiple classes:
+
+  - `Candidate`
+
+  - `VotingSystem`
+
+  - `CsvExporter`
+
+  - `CsvSerializable`
+
+  - `Main`
+
+## How to Run
+
+1. Clone the repository.
    ```bash
    git clone https://github.com/seuusuario/seuprojeto.git
 
-2. Abra em uma IDE como IntelliJ ou Eclipse.
+2. Open the project in your preferred Java IDE (e.g., IntelliJ, Eclipse).
 
-3. Execute a classe Main.java.
+3. Run Main.java.
 
-4. Use o menu interativo no console.
+4. Use the console menu to interact with the system.
 
-##  O que eu aprendi neste projeto
-Organização de lógica em múltiplas classes
+##  What I Learned in This Project
 
-Utilização de HashMap<Integer, Integer> para contagem de votos
+- Java object-oriented programming concepts
 
-Utilização de HashSet<String> para controlar eleitores únicos
+- Encapsulation using private attributes and public methods
 
-Boas práticas com Scanner, .trim(), equalsIgnoreCase()
+- Working with ArrayList, Map, and Set
 
-Validação de entrada com try/catch e InputMismatchException
+- Custom interfaces (CsvSerializable)
 
-Separação de lógica de apresentação e negócio
+- Error handling with try/catch
 
-##  Estrutura do Projeto
- ```bash
-SistemaVotacao/
-├── Main.java
-├── Candidato.java
-├── SistemaVotacao.java
-````
+- Input validation with Scanner
 
-##  Possíveis Melhorias Futuras
-- Exportação dos resultados para .csv ou .json
+- Basic file writing using FileWriter
 
-- Integração com banco de dados
+- Separation of responsibilities across classes
 
-- Suporte a votos em branco ou nulos
+## Project Structure
 
-##  Autor
-- Desenvolvido por Vinicius Speria
-- Contato: vinicius.speria.tech@gmail.com
+- `Candidate`: Represents a candidate with name, number, party, and vote count.
+- `VotingSystem`: Core logic for registering candidates, votes, and exporting results.
+- `CsvExporter`: Handles CSV file generation from candidate data.
+- `CsvSerializable`: Interface defining a contract for CSV serialization.
+- `Main`: Console-based user interaction and application entry point.
+
+
+##  Author
+
+- Developer by Vinicius Speria
+- Contact: vinicius.speria.tech@gmail.com
 - GitHub: https://github.com/ViniciusSperia

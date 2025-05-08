@@ -3,77 +3,87 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        Scanner entrada = new Scanner(System.in); // Cria objeto Scanner para leitura do teclado
+        Scanner scanner = new Scanner(System.in); // Creates scanner object for keyboard input
 
-        SistemaVotacao sv = new SistemaVotacao();
+        VotingSystem votingSystem = new VotingSystem();
 
-        int opcao = -1;
+        int option = -1;
 
         do {
-            System.out.println("Escolha uma opção:");
-            System.out.println("1 - Cadastrar candidato");
-            System.out.println("2 - Votar");
-            System.out.println("3 - Mostrar resultados");
-            System.out.println("4 - Listar Candidatos");
-            System.out.println("0 - Sair");
+            System.out.println("1 - Register candidate");
+            System.out.println("2 - Vote");
+            System.out.println("3 - Show results");
+            System.out.println("4 - List candidates");
+            System.out.println("5 - Export results to CSV");
+            System.out.println("0 - Exit");
 
             try {
-                System.out.print("Digite sua opção: ");
-                opcao = entrada.nextInt();
-                entrada.nextLine(); // limpa buffer
+                System.out.print("Enter your option: ");
+                option = scanner.nextInt();
+                scanner.nextLine(); // Clears input buffer
             } catch (InputMismatchException e) {
-                System.out.println("Valor inválido. Certifique-se de digitar apenas números.");
-                entrada.nextLine(); // limpa o lixo que ficou no buffer
-                opcao = -1; // volta para o início do loop
+                System.out.println("Invalid input. Please enter numbers only.");
+                scanner.nextLine(); // Clears leftover invalid input
+                option = -1;
             }
 
-            switch (opcao) {
+            switch (option) {
                 case 1:
-                    System.out.print("Nome do candidato: ");
-                    String name = entrada.nextLine().trim();
+                    System.out.print("Candidate name: ");
+                    String name = scanner.nextLine().trim();
 
-                    System.out.print("Partido: ");
-                    String party = entrada.nextLine().trim();
+                    System.out.print("Political party: ");
+                    String party = scanner.nextLine().trim();
 
                     try {
-                        System.out.print("Número: ");
-                        int number = entrada.nextInt();
+                        System.out.print("Candidate number: ");
+                        int number = scanner.nextInt();
 
-                        Candidato candidate = new Candidato(name, number, party);
-                        sv.adicionarCandidato(candidate);
+                        Candidate candidate = new Candidate(name, number, party);
+                        votingSystem.registerCandidate(candidate);
                     } catch (InputMismatchException e) {
-                        System.out.println("Erro:  devem ser números.");
-                        entrada.nextLine(); // limpa buffer
+                        System.out.println("Error: Candidate number must be a valid integer.");
+                        scanner.nextLine(); // Clears buffer
                     }
                     break;
+
                 case 2:
-                    System.out.print("Digite seu CPF: ");
-                    String cpf = entrada.nextLine().trim();
+                    System.out.print("Enter your ID (CPF): ");
+                    String voterId = scanner.nextLine().trim();
 
                     try {
-                        System.out.print("Digite o número do candidato: ");
-                        int numeroVoto = entrada.nextInt();
-                        entrada.nextLine(); // limpa o buffer
-                        sv.registrarVoto(numeroVoto, cpf);
+                        System.out.print("Enter candidate number: ");
+                        int voteNumber = scanner.nextInt();
+                        scanner.nextLine(); // Clears buffer
+
+                        votingSystem.registerVote(voteNumber, voterId);
                     } catch (InputMismatchException e) {
-                        System.out.println("Erro: o número do candidato deve ser um número inteiro.");
-                        entrada.nextLine(); // limpa buffer
+                        System.out.println("Error: Candidate number must be an integer.");
+                        scanner.nextLine();
                     }
                     break;
-                case 3:
-                    sv.exibirResultados();
-                    break;
-                case 4:
-                    sv.listarTodos();
-                    break;
-                case 0:
-                    System.out.println("Encerrando...");
-                    break;
-                default:
-                    System.out.println("Opção inválida.");
-            }
-        } while (opcao != 0); // Condição correta para manter o menu
 
-        entrada.close(); // Libera recurso do Scanner
+                case 3:
+                    votingSystem.displayResults();
+                    break;
+
+                case 4:
+                    votingSystem.listCandidates();
+                    break;
+
+                case 5:
+                    votingSystem.exportResultsToCsv("results.csv");
+                    break;
+
+                case 0:
+                    System.out.println("Exiting...");
+                    break;
+
+                default:
+                    System.out.println("Invalid option.");
+            }
+        } while (option != 0);
+
+        scanner.close();
     }
 }
