@@ -1,15 +1,27 @@
 public class Candidate implements CsvSerializable {
 
+    private int id; // Banco de dados usa como chave primária
     private String name;
     private int number;
     private String party;
     private int votes;
 
-    public Candidate(String name, int number, String party) {
+    public Candidate(int id, String name, int number, String party, int votes) {
+        this.id = id;
         this.name = name;
         this.number = number;
         this.party = party;
-        this.votes = 0;
+        this.votes = votes;
+    }
+
+    // Construtor alternativo útil para registros iniciais (sem ID ainda)
+    public Candidate(String name, int number, String party) {
+        this(0, name, number, party, 0);
+    }
+
+    // Getters
+    public int getId() {
+        return id;
     }
 
     public String getName() {
@@ -28,6 +40,11 @@ public class Candidate implements CsvSerializable {
         return votes;
     }
 
+    // Setters
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public void setName(String name) {
         this.name = name;
     }
@@ -44,18 +61,19 @@ public class Candidate implements CsvSerializable {
         this.votes = votes;
     }
 
+    // Para exibição no menu "Listar Candidatos"
+    public String format() {
+        return "Name: " + name + "\n" +
+                "Number: " + number + "\n" +
+                "Party: " + party;
+    }
+
     @Override
     public String toString() {
         return format();
     }
 
-    public String format() {
-        return "Name: " + name + "\n" +
-                "Number: " + number + "\n" +
-                "Party: " + party + "\n" +
-                "Votes: " + votes;
-    }
-
+    // Para exportação em CSV
     @Override
     public String toCsvRow(String separator) {
         return name + separator + number + separator + party + separator + votes;

@@ -1,89 +1,97 @@
-import java.io.IOException;
-import java.util.*;
+import java.util.List;
 
 public class VotingSystem {
 
-    private final List<Candidate> candidateList;
-    private final Map<Integer, Integer> votes;
-    private final Set<String> registeredVoters;
+    private final CandidateRepository candidateRepository;
+    private final VoteRepository voteRepository;
 
     public VotingSystem() {
-        this.candidateList = new ArrayList<>();
-        this.votes = new HashMap<>();
-        this.registeredVoters = new HashSet<>();
+        this.candidateRepository = new CandidateRepository();
+        this.voteRepository = new VoteRepository();
     }
 
-    public void registerCandidate(Candidate c) {
-        for (Candidate existing : candidateList) {
-            if (existing.getNumber() == c.getNumber()) {
-                System.out.println("Error: A candidate with this number already exists.");
-                return;
-            }
+    public void registerCandidate(Candidate candidate) {
+        if (candidateRepository.existsByNumber(candidate.getNumber())) {
+            System.out.println("Error: A candidate with this number already exists.");
+            return;
         }
 
-        votes.put(c.getNumber(), 0);
-        candidateList.add(c);
-        System.out.println("Candidate registered successfully.");
+        if (candidateRepository.save(candidate)) {
+            System.out.println("Candidate registered successfully.");
+        } else {
+            System.out.println("Failed to register candidate.");
+        }
     }
 
     public void listCandidates() {
-        if (candidateList.isEmpty()) {
+        List<Candidate> candidates = candidateRepository.findAll();
+
+        if (candidates.isEmpty()) {
             System.out.println("No candidates registered.");
             return;
         }
 
-        for (Candidate c : candidateList) {
+        for (Candidate c : candidates) {
             System.out.println(c);
             System.out.println("---------------");
         }
     }
 
-    public void registerVote(int number, String cpf) {
-        if (registeredVoters.contains(cpf)) {
+    public void registerVote(int number, String voterId) {
+        if (voteRepository.hasAlreadyVoted(voterId)) {
             System.out.println("You have already voted. Duplicate votes are not allowed.");
             return;
         }
 
-        if (!votes.containsKey(number)) {
+        Candidate candidate = candidateRepository.findByNumber(number);
+        if (candidate == null) {
             System.out.println("Invalid vote. No candidate with that number.");
             return;
         }
 
-        int current = votes.get(number);
-        votes.put(number, current + 1);
-        registeredVoters.add(cpf);
-        System.out.println("Vote registered successfully.");
+        // 1. Registra o voto
+        boolean voteSaved = voteRepository.registerVote(number, voterId);
+
+        // 2. Atualiza a contagem de votos no banco
+        if (voteSaved) {
+            int updatedVotes = candidate.getVotes() + 1;
+            boolean updated = candidateRepository.updateVotes(number, updatedVotes);
+            if (updated) {
+                System.out.println("Vote registered successfully.");
+            } else {
+                System.out.println("Vote was saved, but failed to update candidate count.");
+            }
+        } else {
+            System.out.println("Failed to register vote.");
+        }
     }
 
     public void displayResults() {
-        if (votes.isEmpty()) {
+        List<Candidate> candidates = candidateRepository.findAll();
+
+        if (candidates.isEmpty()) {
             System.out.println("No votes have been registered.");
             return;
         }
 
-        System.out.println("Voting Results:");
-        candidateList.stream()
-                .sorted((c1, c2) -> votes.get(c2.getNumber()) - votes.get(c1.getNumber()))
+        candidates.stream()
+                .sorted((c1, c2) -> Integer.compare(c2.getVotes(), c1.getVotes()))
                 .forEach(c -> {
-                    int totalVotes = votes.get(c.getNumber());
                     System.out.println("Name: " + c.getName());
                     System.out.println("Number: " + c.getNumber());
                     System.out.println("Party: " + c.getParty());
-                    System.out.println("Votes: " + totalVotes);
+                    System.out.println("Votes: " + c.getVotes());
                     System.out.println("---------------");
                 });
     }
 
     public void exportResultsToCsv(String filePath) {
-        for (Candidate c : candidateList) {
-            int count = votes.getOrDefault(c.getNumber(), 0);
-            c.setVotes(count);
-        }
+        List<Candidate> candidates = candidateRepository.findAll();
 
         try {
-            CsvExporter.export(candidateList, filePath, ";", CsvSerializable.csvHeader(";"));
+            CsvExporter.export(candidates, filePath, ";", CsvSerializable.csvHeader(";"));
             System.out.println("CSV export completed successfully.");
-        } catch (IOException e) {
+        } catch (Exception e) {
             System.out.println("Export failed: " + e.getMessage());
         }
     }

@@ -1,62 +1,76 @@
-# Sistema de Votação (Aplicação em Java via Console)
 
-Este projeto é um sistema de votação simples desenvolvido em Java usando entrada via console. Ele permite cadastrar candidatos, votar utilizando um identificador único (como CPF), visualizar e exportar os resultados da eleição.
+# Sistema de Votação (Aplicação Java + SQLite via Console)
+
+Este projeto é um sistema de votação desenvolvido em Java com persistência em SQLite e entrada via console. Permite registrar candidatos, votar usando um identificador único (CPF) e visualizar/exportar os resultados da eleição.
 
 ## Funcionalidades
 
 - Cadastro de candidatos com nome, número e partido político
-- Prevenção de números duplicados entre candidatos
-- Votação com um ID único (cada ID só pode votar uma vez)
-- Exibição de resultados em ordem decrescente por número de votos
-- Exportação dos resultados para um arquivo `.csv`
-- Validação de entrada e tratamento básico de erros
+- Prevenção de números duplicados para candidatos
+- Votação com CPF único (cada CPF pode votar apenas uma vez)
+- Armazenamento dos dados em banco SQLite local
+- Exibição dos resultados ordenados por número de votos
+- Exportação dos resultados em arquivo `.csv`
+- Validação de entradas e tratamento básico de erros
 
 ## Tecnologias Utilizadas
 
 - Java 17
-- Entrada/saída padrão com `Scanner`
+- SQLite (JDBC)
+- SQL com criação automática de tabelas (`CREATE TABLE IF NOT EXISTS`)
 - Estrutura orientada a objetos com múltiplas classes:
-
-    - `Candidate`
-    - `VotingSystem`
-    - `CsvExporter`
-    - `CsvSerializable`
-    - `Main`
+  - `Main`
+  - `Candidate`
+  - `VotingSystem`
+  - `CandidateRepository`
+  - `VoteDAO`
+  - `DatabaseConnection`
+  - `DatabaseSetup`
+  - `CsvExporter`
+  - `CsvSerializable`
 
 ## Como Executar
 
 1. Clone o repositório:
    ```bash
-   git clone https://github.com/seuusuario/seuprojeto.git
+   git clone https://github.com/ViniciusSperia/voting-system.git
    ```
 
-2. Abra o projeto em uma IDE Java de sua preferência (como IntelliJ ou Eclipse)
+2. Abra o projeto em uma IDE Java (IntelliJ, Eclipse etc.)
 
-3. Execute o arquivo `Main.java`
+3. Execute a classe `Main`. O banco será inicializado automaticamente.
 
-4. Use o menu interativo no console para interagir com o sistema
+4. Use o menu do console para interagir com o sistema.
 
 ## O Que Eu Aprendi Neste Projeto
 
-- Conceitos de programação orientada a objetos em Java
-- Encapsulamento usando atributos privados e métodos públicos
-- Uso de `ArrayList`, `Map` e `Set`
-- Interfaces customizadas (`CsvSerializable`)
-- Tratamento de exceções com `try/catch`
-- Validação de entrada com `Scanner`
-- Escrita em arquivos com `FileWriter`
-- Separação de responsabilidades em classes distintas
+- Conceitos de orientação a objetos em Java
+- Integração com banco de dados via JDBC e SQL
+- Controle de transações (commit/rollback)
+- Padrões DAO e Repository
+- Validação de entrada e tratamento de exceções
+- Exportação de dados para CSV
+- Separação clara de responsabilidades entre classes
 
 ## Estrutura do Projeto
 
-- `Candidate`: representa um candidato com nome, número, partido e contagem de votos
-- `VotingSystem`: lógica principal para cadastro, votação e exportação
-- `CsvExporter`: gera arquivos CSV a partir dos dados dos candidatos
-- `CsvSerializable`: interface que define a estrutura de serialização em CSV
-- `Main`: ponto de entrada da aplicação e interação via console
+```
+VotingSystem/
+├── Main.java
+├── Candidate.java
+├── VotingSystem.java
+├── CandidateRepository.java
+├── VoteDAO.java
+├── DatabaseConnection.java
+├── DatabaseSetup.java
+├── CsvExporter.java
+├── CsvSerializable.java
+└── database/
+    └── voting.sqlite
+```
 
 ## Autor
 
 - Desenvolvido por Vinicius Speria
-- Contato: vinicius.speria.tech@gmail.com
-- GitHub: https://github.com/ViniciusSperia
+- Contato: [vinicius.speria.tech@gmail.com](mailto:vinicius.speria.tech@gmail.com)
+- [github.com/ViniciusSperia](https://github.com/ViniciusSperia)
